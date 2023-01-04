@@ -1,7 +1,9 @@
-import { useState } from "react";
-import { Routes, Route } from "react-router-dom";
+import { useState, useEffect } from "react";
 import Topbar from "./scenes/global/Topbar";
 import Sidebar from "./scenes/global/Sidebar";
+import { CssBaseline, ThemeProvider } from "@mui/material";
+import { ColorModeContext, useMode } from "./theme";
+import { Routes, Route } from "react-router-dom";
 import Dashboard from "./scenes/dashboard";
 import Team from "./scenes/team";
 import Invoices from "./scenes/invoices";
@@ -12,24 +14,35 @@ import Line from "./scenes/line";
 import Pie from "./scenes/pie";
 import FAQ from "./scenes/faq";
 import Geography from "./scenes/geography";
-import { CssBaseline, ThemeProvider } from "@mui/material";
-import { ColorModeContext, useMode } from "./theme";
-import Calendar from "./scenes/calendar/calendar";
 
-function App() {
+import Calendar from "./scenes/calendar/calendar";
+import UserLogin from "./components/auth/Login";
+import Registration from "./components/Registration";
+import Profile from "./Profile";
+
+const App = () => {
+ 
   const [theme, colorMode] = useMode();
   const [isSidebar, setIsSidebar] = useState(true);
+  const [isLoggedIn, setIsLoggedIn] = useState('false');
+
+
+  useEffect(() => { 
+    setIsLoggedIn((isLoggedIn) => isLoggedIn); 
+  }, []); // <- add empty brackets here
 
   return (
-    <ColorModeContext.Provider value={colorMode}>
-      <ThemeProvider theme={theme}>
-        <CssBaseline />
-        <div className="app">
-          <Sidebar isSidebar={isSidebar} />
-          <main className="content">
-            <Topbar setIsSidebar={setIsSidebar} />
+   <ColorModeContext.Provider value={colorMode}>
+   <ThemeProvider theme={theme}>
+     <CssBaseline />
+     <div className="app">
+    
+        <Sidebar isSidebar={isSidebar} isLoggedIn={isLoggedIn}  /> 
+        <main className="content">
+            <Topbar setIsSidebar={setIsSidebar} />  
             <Routes>
-              <Route path="/" element={<Dashboard />} />
+              <Route path="/" element={ <Dashboard /> } style />  
+              <Route path="/profile" element={ <Profile /> } />  
               <Route path="/team" element={<Team />} />
               <Route path="/contacts" element={<Contacts />} />
               <Route path="/invoices" element={<Invoices />} />
@@ -40,11 +53,14 @@ function App() {
               <Route path="/faq" element={<FAQ />} />
               <Route path="/calendar" element={<Calendar />} />
               <Route path="/geography" element={<Geography />} />
-            </Routes>
-          </main>
-        </div>
-      </ThemeProvider>
-    </ColorModeContext.Provider>
+              <Route path="/user-login" element={<UserLogin />} />
+              <Route path="/user-register" element={<Registration />} />
+              <Route path="*" element={<UserLogin />} />
+            </Routes>       
+        </main>
+     </div> 
+  </ThemeProvider>
+  </ColorModeContext.Provider>
   );
 }
 
