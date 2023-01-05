@@ -31,7 +31,7 @@ Parse.initialize(PARSE_APPLICATION_ID, PARSE_JAVASCRIPT_KEY);
 Parse.serverURL = PARSE_HOST_URL;
 
 
-const App = () => {
+const Home = () => {
  
   const [theme, colorMode] = useMode();
   const [isSidebar, setIsSidebar] = useState(true);
@@ -45,7 +45,6 @@ const App = () => {
       setauthenticated(loggedInUser);
       navigate('/');
     } else {
-      setauthenticated(false);
       navigate('/user-login');
     }
   }, [authenticated]);
@@ -56,8 +55,8 @@ const App = () => {
         <ThemeProvider theme={theme}>
           <CssBaseline />
           <div className="app">
-              <Sidebar isSidebar={isSidebar} style={{display: authenticated ? 'block' : 'none' }} />  
-              <main className="content" >
+              { authenticated && (<Sidebar isSidebar={isSidebar} /> ) } 
+              <main className="content" style={{display: authenticated ? 'block' : 'none' }}>
                   { authenticated && ( <Topbar setIsSidebar={setIsSidebar} authenticated={authenticated} /> ) } 
                   
                   <Routes>
@@ -86,4 +85,4 @@ const App = () => {
     );
 }
 
-export default App;
+export default Home;

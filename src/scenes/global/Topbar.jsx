@@ -8,7 +8,7 @@ import NotificationsOutlinedIcon from "@mui/icons-material/NotificationsOutlined
 import SettingsOutlinedIcon from "@mui/icons-material/SettingsOutlined";
 import PersonOutlinedIcon from "@mui/icons-material/PersonOutlined";
 import SearchIcon from "@mui/icons-material/Search";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import LogoutIcon from '@mui/icons-material/Logout';
 
 const Topbar = () => {
@@ -17,7 +17,15 @@ const Topbar = () => {
   const colorMode = useContext(ColorModeContext);
   const isLoggedIn = useState(true);
 
+  const navigate = useNavigate();
+  const handleLogout  = (e) => {
+    e.preventDefault()
+    localStorage.removeItem("authenticated");
+    navigate("/user-login");
+  }
+
   return (
+     
     <Box display="flex" justifyContent="space-between" p={2}>
       {/* SEARCH BAR */}
       <Box
@@ -47,7 +55,7 @@ const Topbar = () => {
           <SettingsOutlinedIcon />
         </IconButton>
         { isLoggedIn ?   
-        <Link to="/user-logout">
+        <Link to="/" onClick={handleLogout} >
           <IconButton >
             <LogoutIcon />
           </IconButton>

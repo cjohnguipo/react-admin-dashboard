@@ -35,14 +35,18 @@ const Item = ({ title, to, icon, selected, setSelected }) => {
   );
 };
 
-const Sidebar = (props) => {
+const Sidebar = (authenticated) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [selected, setSelected] = useState("Dashboard");
 
   return (
+
     
+
+     authenticated &&  
+
     <Box
       sx={{
         "& .pro-sidebar-inner": {
@@ -81,7 +85,7 @@ const Sidebar = (props) => {
                 ml="15px"
               >
                 <Typography variant="h3" color={colors.grey[100]}>
-                {props.isLoggedIn } ADMIN PORTAL
+                ADMIN PORTAL
                   
 
                 </Typography>
@@ -225,6 +229,7 @@ const Sidebar = (props) => {
         </Menu>
       </ProSidebar>
     </Box>
+      
   );
 };
 

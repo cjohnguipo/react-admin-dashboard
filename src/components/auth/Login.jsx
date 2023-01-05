@@ -1,11 +1,12 @@
-import * as React from 'react';
+import * as React  from 'react';
 import { Container, Grid, Paper, TextField, Button, OutlinedInput, InputAdornment, IconButton, Divider, Alert, FormControl, InputLabel  } from "@mui/material";
  
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
-import { NavLink  } from 'react-router-dom';
+import { NavLink, useNavigate  } from 'react-router-dom';
 import { Box } from '@mui/system';
-
+import Parse from 'parse/dist/parse.min.js';
+  
 const Login = () => {
 
     const [showPassword, setShowPassword] = React.useState(false);
@@ -13,29 +14,55 @@ const Login = () => {
     const handleMouseDownPassword = (event) => {
       event.preventDefault();
     };
+    const [User, setUser] = React.useState(null);
+  
+    async function fetchUser() {
+        // create your Parse Query using the User Class you've created
+        const query = new Parse.Query('User');
+        // use the equalTo filter to look for user which the name is John. this filter can be used in any data type
+        query.equalTo('name', 'Joey');
+        // run the query
+        const User = await query.first();
+        // access the Parse Object attributes
+        console.log('User name: ', User.get('name'));
+        console.log('User email: ', User.get('email'));
+        console.log('User password: ', User.get('password'));
+        console.log('User id: ', User.id);
+        setUser(User);
+    }    
+    const navigate = useNavigate();
 
+    const [authenticated, setauthenticated] = React.useState(localStorage.getItem(localStorage.getItem("authenticated")|| false));
+    const users = [{ email: "cjohnguipo@gmail.com", password: "test" }];
+    const handleSubmit  = (e) => {
+        e.preventDefault()
+        const formData = new FormData(e.currentTarget);
+        const actualData = {
+            email: formData.get('email'),
+            password: formData.get('password')
+        }
+        const account = users.find((user) => user.email === actualData.email);
+        if(actualData.email && actualData.password) {
+            if (account && account.password === actualData.password) {
+                setError({status: false, msg: 'Login Success', type: 'success'});
+                setauthenticated(true)
+                localStorage.setItem("authenticated", true);
+                document.getElementById('login-form').reset();
+                navigate('/');
+            }else {
+                setError({status: true, msg: 'Email or password mismatched!', type: 'error'})
+            }
+        } else {
+            setError({status: true, msg: 'All fields are required!', type: 'error'})
+        }
+ 
+    };
 
     const [error, setError] = React.useState({
         status: false,
         msg: "",
         type: "error"
     });    
-
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        const formData = new FormData(e.currentTarget);
-        const actualData = {
-            email: formData.get('email'),
-            password: formData.get('password')
-        }
-        if(actualData.email && actualData.password) {
-            console.log(actualData);
-            document.getElementById('login-form').reset();
-            setError({status: false, msg: 'Login Success', type: 'success'});
-        } else {
-            setError({status: true, msg: 'All fields are required!', type: 'error'})
-        }
-    }
 
     return (
         <Box component='form' noValidate sx={{ mt:1 }} id="login-form" onSubmit={handleSubmit}>
